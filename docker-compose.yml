@@ -1,0 +1,16 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    container_name: nestjs-postgres
+    environment:
+      POSTGRES_DB: album-tracker
+      POSTGRES_USER: album-tracker
+      POSTGRES_PASSWORD: album-tracker
+    volumes:
+        - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+    postgres:
