@@ -74,7 +74,7 @@ export class AlbumController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('search')
+  @Get('last-fm/search')
   @Auth()
   @ApiOperation({ summary: 'Searches for albums' })
   @ApiResponse({
@@ -88,7 +88,7 @@ export class AlbumController {
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get('info')
+  @Get('last-fm/info')
   @Auth()
   @ApiOperation({ summary: 'Returns album info' })
   @ApiResponse({
