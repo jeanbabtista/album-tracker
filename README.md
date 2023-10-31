@@ -139,7 +139,7 @@ Follow these steps to get the Album Tracker up and running on your local machine
 ### Notes
 
 > There is probably some bugs. I've encountered many, especially on the Last.fm API side (`/album/search` and `/album/info` endpoints).
-> I've tried to handle them as best as I could, but I'm sure there are some that I've missed. If you encounter any, please let me know.
+> I've tried to handle them as good as I could, but I'm sure there are some that I've missed. If you encounter any, please let me know.
 
 ### Testing
 
@@ -148,3 +148,21 @@ Follow these steps to get the Album Tracker up and running on your local machine
     ```bash
     pnpm test
     ```
+
+### Updates
+
+1. To update this repository, run the following commands:
+   
+   ```bash
+   # Make sure you are on the `main` branch
+   git checkout main
+   
+   # Pull latest changes
+   git pull
+   ```
+
+2. Now, you can restart your app:
+
+   ```bash
+   pnpm start
+   ```
