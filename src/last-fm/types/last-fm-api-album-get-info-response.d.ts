@@ -1,3 +1,4 @@
+// https://www.last.fm/api/show/album.getInfo
 export interface LastFmApiAlbumGetInfoResponse {
   album: {
     name: string

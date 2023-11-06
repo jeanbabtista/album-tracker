@@ -1,5 +1,5 @@
-// https://www.last.fm/api/show/album.search
-export interface LastFmApiAlbumSearchResponse {
+// https://www.last.fm/api/show/artist.search
+export interface LastFmApiArtistSearchResponse {
   results: {
     'opensearch:Query': {
       '#text': string
@@ -10,27 +10,22 @@ export interface LastFmApiAlbumSearchResponse {
     'opensearch:totalResults': string
     'opensearch:startIndex': string
     'opensearch:itemsPerPage': string
-    albummatches: {
-      album:
+    artistmatches: {
+      artist:
         | {
             name: string
-            artist: string
-            url: string
-            image: { '#text': string; size: string }[] | { '#text': string; size: string }
-            streamable: string
             mbid: string
+            url: string
+            streamable: string
+            image: { '#text': string; size: string }[] | { '#text': string; size: string }
           }[]
         | {
             name: string
-            artist: string
-            url: string
-            image: { '#text': string; size: string }[] | { '#text': string; size: string }
-            streamable: string
             mbid: string
+            url: string
+            streamable: string
+            image: { '#text': string; size: string }[] | { '#text': string; size: string }
           }
-    }
-    '@attr': {
-      for: string
     }
   }
 }
