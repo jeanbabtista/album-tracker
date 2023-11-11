@@ -7,6 +7,7 @@ import { GlobalExceptionFilter } from './common/filters/all-exception.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  app.enableCors()
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }))
   app.useGlobalFilters(new GlobalExceptionFilter())
   setupSwagger(app)
