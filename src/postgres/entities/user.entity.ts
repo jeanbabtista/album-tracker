@@ -3,14 +3,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   Unique,
   UpdateDateColumn
 } from 'typeorm'
-import { Album } from './album.entity'
+import { Playlist } from './playlist.entity'
 
 @Entity()
 @Unique(['email'])
@@ -37,6 +35,6 @@ export class User {
   @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date
 
-  @OneToMany(() => Album, (album) => album.user)
-  savedAlbums: Album[]
+  @OneToMany(() => Playlist, (playlist) => playlist.user)
+  playlists: Playlist[]
 }

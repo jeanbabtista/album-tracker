@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsUrl, IsUUID } from 'class-validator'
+import { IsNumber, IsOptional, IsString, IsUrl } from 'class-validator'
 import { Expose } from 'class-transformer'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
@@ -23,10 +23,25 @@ export class CreateAlbumDto {
   @Expose()
   image: string
 
-  @ApiPropertyOptional({
-    example:
-      'The Dark Side of the Moon is the eighth studio album by the English rock band Pink Floyd, released on 1 March 1973 by Harvest Records.'
-  })
+  @ApiPropertyOptional({ example: '1967-01-04' })
+  @IsString()
+  @IsOptional()
+  @Expose()
+  releaseDate: string
+
+  @ApiPropertyOptional({ example: 11 })
+  @IsNumber()
+  @IsOptional()
+  @Expose()
+  listeners: number
+
+  @ApiPropertyOptional({ example: 11 })
+  @IsNumber()
+  @IsOptional()
+  @Expose()
+  playcount: number
+
+  @ApiPropertyOptional({ example: 'Summary' })
   @IsString()
   @IsOptional()
   @Expose()

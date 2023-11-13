@@ -1,8 +1,8 @@
 // https://www.last.fm/api/show/artist.getInfo
 export interface LastFmApiArtistGetInfoResponse {
   artist: {
-    name: string
     mbid: string
+    name: string
     url: string
     image: { '#text': string; size: string }[] | { '#text': string; size: string }
     streamable: string
@@ -10,11 +10,13 @@ export interface LastFmApiArtistGetInfoResponse {
     similar: {
       artist:
         | {
+            mbid: string
             name: string
             url: string
             image: { '#text': string; size: string }[] | { '#text': string; size: string }
           }[]
         | {
+            mbid: string
             name: string
             url: string
             image: { '#text': string; size: string }[] | { '#text': string; size: string }

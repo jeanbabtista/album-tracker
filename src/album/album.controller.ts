@@ -1,27 +1,15 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  ParseUUIDPipe,
-  Post,
-  Query
-} from '@nestjs/common'
+import { BadRequestException, Controller, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Query } from '@nestjs/common'
 import { LastFmService } from '../last-fm/last-fm.service'
-import { Observable } from 'rxjs'
+import { firstValueFrom } from 'rxjs'
 import { AlbumsSearchDto } from '../last-fm/dtos/album-search.dto'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { AlbumInfoDto } from '../last-fm/dtos/album-info.dto'
 import { Auth } from '../common/decorators/auth.decorator'
-import { CreateAlbumDto } from './dtos/create-album.dto'
 import { RequestUser } from '../common/decorators/request-user.decorator'
 import { User } from '../postgres/entities/user.entity'
 import { AlbumService } from './album.service'
 import { Album } from '../postgres/entities/album.entity'
+import { CreateAlbumDto } from './dtos/create-album.dto'
+import { serialize } from '../common/utils/serialize'
 
 @Controller('album')
 @ApiTags('album')
@@ -32,45 +20,28 @@ export class AlbumController {
   ) {}
 
   @HttpCode(HttpStatus.OK)
-  @Get()
-  @Auth()
-  @ApiOperation({ summary: 'Returns all albums for the current user' })
+  @Get(':id')
+  @ApiOperation({ summary: 'Returns an album by id' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Returns all albums for the current user',
-    isArray: true,
+    description: 'Returns an album by idr',
     type: Album
   })
-  async findAllAlbums(@RequestUser() user: User): Promise<Album[]> {
-    return await this.albumService.findAllByUserId(user.id)
+  async findById(@RequestUser() user: User, @Param('id', new ParseUUIDPipe()) id: string): Promise<Album> {
+    return await this.albumService.findOneById(id)
   }
 
   @HttpCode(HttpStatus.OK)
-  @Get(':id')
-  @Auth()
-  @ApiOperation({ summary: 'Returns an album by id for the current user' })
+  @Get()
+  @ApiOperation({ summary: 'Returns all albums in database' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Returns an album by id for the current user',
-    type: Album
+    description: 'Returns all albums in database',
+    type: [Album]
   })
-  async findAlbumById(@RequestUser() user: User, @Param('id', new ParseUUIDPipe()) id: string): Promise<Album> {
-    if (!id) throw new BadRequestException('Missing `id` query parameter')
-    return await this.albumService.findOneById(id, user.id)
-  }
-
-  @HttpCode(HttpStatus.CREATED)
-  @Post()
-  @Auth()
-  @ApiOperation({ summary: 'Creates an album for the current user' })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description: 'Creates an album for the current user',
-    type: Album
-  })
-  async createAlbum(@RequestUser() user: User, @Body() body: CreateAlbumDto): Promise<{ album: Album }> {
-    const album = await this.albumService.create(body, user.id)
-    return { album }
+  async findAll(): Promise<{ count: number; albums: Album[] }> {
+    const [albums, count] = await this.albumService.findAll()
+    return { count, albums }
   }
 
   @HttpCode(HttpStatus.OK)
@@ -82,9 +53,33 @@ export class AlbumController {
     description: 'Searches for albums',
     type: AlbumsSearchDto
   })
-  searchAlbums(@Query('query') query: string): Observable<AlbumsSearchDto> {
+  async search(@Query('query') query: string): Promise<Album[]> {
     if (!query) throw new BadRequestException('Missing `search` query parameter')
-    return this.lastFmService.searchAlbums(query)
+
+    const albums: Album[] = []
+
+    // fetch albums from last.fm
+    const result = await firstValueFrom(this.lastFmService.searchAlbums(query))
+
+    // save albums to our database
+    for (const data of result.albums) {
+      const album = await this.albumService.createOrUpdate(
+        serialize(data, CreateAlbumDto, (data) => ({
+          name: data.name,
+          artist: data.artist,
+          url: data.url,
+          image: data.image,
+          releaseDate: '',
+          listeners: 0,
+          playcount: 0,
+          summary: ''
+        }))
+      )
+
+      albums.push(album)
+    }
+
+    return albums
   }
 
   @HttpCode(HttpStatus.OK)
@@ -94,24 +89,69 @@ export class AlbumController {
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns album info',
-    type: AlbumInfoDto
+    type: Album
   })
-  getAlbumInfo(@Query('artist') artist: string, @Query('album') album: string): Observable<AlbumInfoDto> {
+  async getInfo(@Query('artist') artist: string, @Query('album') album: string): Promise<Album> {
     if (!artist) throw new BadRequestException('Missing `artist` query parameter')
     if (!album) throw new BadRequestException('Missing `album` query parameter')
-    return this.lastFmService.getAlbumInfo(artist, album)
+
+    // fetch album info from last.fm
+    const info = await firstValueFrom(this.lastFmService.getAlbumInfo(artist, album))
+
+    // save album to our database
+    return await this.albumService.createOrUpdate(
+      serialize(info, CreateAlbumDto, (data) => ({
+        name: data.name,
+        artist: data.artist,
+        url: data.url,
+        image: data.image,
+        releaseDate: data.releaseDate || null,
+        listeners: data.listeners || null,
+        playcount: data.playcount || null,
+        summary: data.summary || null
+      }))
+    )
   }
 
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @Delete()
+  @HttpCode(HttpStatus.OK)
+  @Get('last-fm/similar')
   @Auth()
-  @ApiOperation({ summary: 'Deletes an album by id for the current user' })
+  @ApiOperation({ summary: 'Returns similar albums' })
   @ApiResponse({
-    status: HttpStatus.NO_CONTENT,
-    description: 'Deletes an album by id for the current user'
+    status: HttpStatus.OK,
+    description: 'Returns similar albums',
+    type: [Album]
   })
-  async deleteAlbum(@RequestUser() user: User, @Query('id') id: string) {
-    if (!id) throw new BadRequestException('Missing `id` query parameter')
-    await this.albumService.delete(id, user.id)
+  async getSimilar(@Query('artist') artist: string): Promise<Album[]> {
+    if (!artist) throw new BadRequestException('Missing `artist` query parameter')
+
+    const data: Album[] = []
+
+    // fetch similar artists
+    const { artists } = await firstValueFrom(this.lastFmService.getSimilarArtists(artist))
+
+    // for each similar artist, fetch top albums
+    for (const { name } of artists) {
+      const result = await firstValueFrom(this.lastFmService.getArtistTopAlbums(name))
+      for (const lastFmAlbum of result.albums) {
+        // save album to our database
+        const album = await this.albumService.createOrUpdate(
+          serialize(lastFmAlbum, CreateAlbumDto, (data) => ({
+            name: data.name,
+            artist: artist,
+            url: data.url,
+            image: data.image,
+            releaseDate: null,
+            listeners: 0,
+            playcount: 0,
+            summary: ''
+          }))
+        )
+
+        data.push(album)
+      }
+    }
+
+    return data
   }
 }

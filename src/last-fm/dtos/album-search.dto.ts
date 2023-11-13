@@ -1,5 +1,6 @@
-import { IsString, IsUrl, ValidateNested } from 'class-validator'
+import { IsNotEmpty, IsString, IsUrl, IsUUID, ValidateNested } from 'class-validator'
 import { Expose, Type } from 'class-transformer'
+import { ApiProperty } from '@nestjs/swagger'
 
 export class AlbumSearchDto {
   @IsString()

@@ -13,15 +13,15 @@ export interface LastFmApiArtistSearchResponse {
     artistmatches: {
       artist:
         | {
-            name: string
             mbid: string
+            name: string
             url: string
             streamable: string
             image: { '#text': string; size: string }[] | { '#text': string; size: string }
           }[]
         | {
-            name: string
             mbid: string
+            name: string
             url: string
             streamable: string
             image: { '#text': string; size: string }[] | { '#text': string; size: string }

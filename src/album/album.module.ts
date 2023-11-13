@@ -10,6 +10,7 @@ import { UserModule } from '../user/user.module'
 @Module({
   imports: [LastFmModule, TypeOrmModule.forFeature([Album]), JwtModule, UserModule],
   controllers: [AlbumController],
-  providers: [AlbumService]
+  providers: [AlbumService],
+  exports: [AlbumService]
 })
 export class AlbumModule {}

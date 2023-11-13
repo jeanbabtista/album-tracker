@@ -13,20 +13,20 @@ export interface LastFmApiAlbumSearchResponse {
     albummatches: {
       album:
         | {
+            mbid: string
             name: string
             artist: string
             url: string
             image: { '#text': string; size: string }[] | { '#text': string; size: string }
             streamable: string
-            mbid: string
           }[]
         | {
+            mbid: string
             name: string
             artist: string
             url: string
             image: { '#text': string; size: string }[] | { '#text': string; size: string }
             streamable: string
-            mbid: string
           }
     }
     '@attr': {

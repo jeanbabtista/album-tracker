@@ -1,6 +1,7 @@
 // https://www.last.fm/api/show/album.getInfo
 export interface LastFmApiAlbumGetInfoResponse {
   album: {
+    mbid: string
     name: string
     artist: string
     url: string

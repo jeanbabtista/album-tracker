@@ -17,6 +17,8 @@ import { LastFmApiArtistGetInfoResponse } from './types/last-fm-api-artist-get-i
 import { ArtistInfoDto } from './dtos/artist-info.dto'
 import { LastFmApiArtistGetTopAlbumsResponse } from './types/last-fm-api-artist-get-top-albums-response'
 import { ArtistTopAlbumsDto } from './dtos/artist-get-top-albums.dto'
+import { LastFmApiArtistGetSimilarResponse } from './types/last-fm-api-artist-get-similar-response'
+import { ArtistsSimilarDto } from './dtos/artist-similar.dto'
 
 @Injectable()
 export class LastFmService {
@@ -47,7 +49,12 @@ export class LastFmService {
 
         return serialize(response, AlbumsSearchDto, (data) => ({
           albums: Array.isArray(data.albummatches.album)
-            ? data.albummatches.album.map((album) => ({ ...album, image: this.getImageUrl(album.image) }))
+            ? data.albummatches.album.map((album) => ({
+                name: album.name || '',
+                artist: album.artist || '',
+                url: album.url,
+                image: this.getImageUrl(album.image)
+              }))
             : []
         }))
       }),
@@ -84,7 +91,7 @@ export class LastFmService {
             : data.tags?.tag
             ? [{ name: data.tags.tag.name, url: data.tags.tag.url }]
             : [],
-          releaseDate: data.releasedate,
+          releaseDate: data.releasedate || null,
           listeners: isNaN(+data.listeners) ? 0 : +data.listeners,
           playcount: isNaN(+data.playcount) ? 0 : +data.playcount,
           summary: data.wiki?.summary || ''
@@ -142,6 +149,7 @@ export class LastFmService {
           content: data.bio?.content || '',
           similar: Array.isArray(data.similar?.artist)
             ? data.similar.artist.map((artist) => ({
+                mbid: artist.mbid,
                 name: artist.name,
                 url: artist.url,
                 image: this.getImageUrl(artist.image)
@@ -181,6 +189,33 @@ export class LastFmService {
                 url: album.url,
                 listeners: isNaN(+album.listeners) ? 0 : +album.listeners,
                 image: this.getImageUrl(album.image)
+              }))
+            : []
+        }))
+      ),
+      catchError((error: AxiosError) => throwError(() => new LastFmException(error)))
+    )
+  }
+
+  getSimilarArtists(artist: string) {
+    const params = {
+      method: 'artist.getsimilar',
+      artist,
+      limit: 3,
+      autocorrect: 1,
+      ...this.getParams()
+    }
+
+    return this.httpService.get<LastFmApiArtistGetSimilarResponse>(this.baseUrl, { params }).pipe(
+      map((response: AxiosResponse<LastFmApiArtistGetSimilarResponse>) => response.data),
+      map((response: LastFmApiArtistGetSimilarResponse) => response.similarartists),
+      map((response: LastFmApiArtistGetSimilarResponse['similarartists']) =>
+        serialize(response, ArtistsSimilarDto, (data) => ({
+          artists: Array.isArray(data.artist)
+            ? data.artist.map((artist) => ({
+                name: artist.name,
+                url: artist.url,
+                image: this.getImageUrl(artist.image)
               }))
             : []
         }))

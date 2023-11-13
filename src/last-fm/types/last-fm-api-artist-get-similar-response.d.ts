@@ -1,19 +1,19 @@
-// https://www.last.fm/api/show/artist.getTopAlbums
-export interface LastFmApiArtistGetTopAlbumsResponse {
-  topalbums: {
-    album:
+// https://www.last.fm/api/show/artist.getSimilar
+export interface LastFmApiArtistGetSimilarResponse {
+  similarartists: {
+    artist:
       | {
           mbid: string
           name: string
-          listeners: string
           url: string
+          match: string
           image: { '#text': string; size: string }[] | { '#text': string; size: string }
         }
       | {
           mbid: string
           name: string
-          listeners: string
           url: string
+          match: string
           image: { '#text': string; size: string }[] | { '#text': string; size: string }
         }[]
   }

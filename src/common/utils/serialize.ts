@@ -1,4 +1,4 @@
-import { instanceToPlain, plainToClass, plainToInstance } from 'class-transformer'
+import { instanceToPlain, plainToInstance } from 'class-transformer'
 import { validateSync, ValidatorOptions } from 'class-validator'
 
 type TransformationFunction<T, U> = (data: T) => U
@@ -16,7 +16,13 @@ export function serialize<T, U>(
 ): U {
   const dto: U = plainToInstance(classType, instanceToPlain(transform ? transform(data) : data), options)
   const errors = validateSync(dto as object, validationOptions)
-  if (errors.length > 0) console.log('errors', errors) // throw new Error('Validation error')
+  if (errors.length > 0) {
+    console.log('errors') // throw new Error('Validation error')
+    for (const error of errors) {
+      console.log(error)
+    }
+  }
+
   return dto
 }
 

@@ -1,8 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm'
-import { User } from './user.entity'
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn, Unique } from 'typeorm'
+import { Playlist } from './playlist.entity'
 
 @Entity()
-@Unique(['userId', 'url'])
+@Unique(['url'])
 export class Album {
   @PrimaryGeneratedColumn('uuid')
   id: string
@@ -22,10 +22,15 @@ export class Album {
   @Column('text', { nullable: true })
   summary: string
 
-  @ManyToOne(() => User, (user) => user.savedAlbums)
-  @JoinColumn({ name: 'user_id' })
-  user: User
+  @Column('date', { name: 'release_date', nullable: true })
+  releaseDate: string
 
-  @Column('uuid', { name: 'user_id' })
-  userId: string
+  @Column('int', { nullable: true, default: 0 })
+  listeners: number
+
+  @Column('int', { nullable: true, default: 0 })
+  playcount: number
+
+  @ManyToMany(() => Playlist, (playlist) => playlist.albums, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
+  playlists: Playlist[]
 }

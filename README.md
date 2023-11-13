@@ -39,20 +39,19 @@ manage their tracked albums across multiple sessions.
 
 ### Users
 
-| Method | Endpoint         | Description      | Body  | Auth         | Important notes                                           |
-|--------|------------------|------------------|-------|--------------|-----------------------------------------------------------|
-| GET    | `/users/profile` | Get user profile |       | Bearer token | If no token or invalid token, throws `Unauthorized` error |
+| Method | Endpoint        | Description      | Body  | Auth         | Important notes                                           |
+|--------|-----------------|------------------|-------|--------------|-----------------------------------------------------------|
+| GET    | `/user/profile` | Get user profile |       | Bearer token | If no token or invalid token, throws `Unauthorized` error |
 
 ### Albums
 
-| Method | Endpoint                                            | Description       | Body                                                                                                                                           | Auth         | Important notes                                                  | 
-|--------|-----------------------------------------------------|-------------------|------------------------------------------------------------------------------------------------------------------------------------------------|--------------|------------------------------------------------------------------|
-| GET    | `/albums`                                           | Get all albums    |                                                                                                                                                | Bearer token |                                                                  |
-| GET    | `/albums/:id`                                       | Get album by ID   |                                                                                                                                                | Bearer token |                                                                  |
-| POST   | `/album`                                            | Add new album     | `{ "name": "Test", "artist": "Test", "url": "https://www.last.fm/music", "image": "https://lastfm.freetls.fastly.net", "summary": "Summary" }` | Bearer token | If duplicate user id and album url, throws `duplicate key` error |
-| DELETE | `/album/:id`                                        | Delete album      |                                                                                                                                                | Bearer token |                                                                  |
-| GET    | `/album/last-fm/search?query=<query>`               | Search for albums |                                                                                                                                                | Bearer token |                                                                  |
-| GET    | `/album/last-fm/info?artist=<artist>&album=<album>` | Get album info    |                                                                                                                                                | Bearer token |                                                                  |
+| Method | Endpoint                                            | Description        | Body                                                                                                                                           | Auth         | Important notes                                                  | 
+|--------|-----------------------------------------------------|--------------------|------------------------------------------------------------------------------------------------------------------------------------------------|--------------|------------------------------------------------------------------|
+| GET    | `/album`                                            | Get all albums     |                                                                                                                                                | Bearer token |                                                                  |
+| GET    | `/album/:id`                                        | Get album by ID    |                                                                                                                                                | Bearer token |                                                                  |
+| GET    | `/album/last-fm/search?query=<query>`               | Search for albums  |                                                                                                                                                | Bearer token |                                                                  |
+| GET    | `/album/last-fm/info?artist=<artist>&album=<album>` | Get album info     |                                                                                                                                                | Bearer token |                                                                  |
+| GET    | `/album/last-fm/similar?artist=<artist>`            | Get similar albums |                                                                                                                                                | Bearer token |                                                                  |
 
 ### Artists
 
@@ -60,6 +59,19 @@ manage their tracked albums across multiple sessions.
 |--------|----------------------------------------|--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|--------------|------------------------------------------------------------------|
 | GET    | `/artist/last-fm/search?query=<query>` | Search for artists             |                                                                                                                                                | Bearer token |                                                                  |
 | GET    | `/artist/last-fm/info?artist=<artist>` | Get artist info and top albums |                                                                                                                                                | Bearer token |                                                                  |
+
+### Playlists (of albums)
+
+| Method | Endpoint               | Description                  | Body                                      | Auth         | Important notes |
+|--------|------------------------|------------------------------|-------------------------------------------|--------------|-----------------|
+| GET    | `/playlist`            | Get all playlists            |                                           |              |                 |
+| GET    | `/playlist/me/all`     | Get all playlists from user  |                                           | Bearer token |                 |
+| GET    | `/playlist/:id`        | Get playlist by ID           |                                           |              |                 |
+| PUT    | `/playlist/:id`        | Updates playlist by ID       | `{ "name": "Test" }`                      |              |                 |
+| POST   | `/playlist`            | Save playlist                | `{ "name": "Test", "description": "test"` | Bearer token |                 |
+| POST   | `/playlist/:id/albums` | Adds albums to playlist      | `{ "albumIds": [] }`                      | Bearer token |                 |
+| DELETE | `/playlist/:id/albums` | Removes albums from playlist | `{ "albumIds": [] }`                      | Bearer token |                 |
+| DELETE | `/playlist/:id`        | Delete playlist              |                                           | Bearer token |                 |
 
 ## Getting Started
 
