@@ -19,8 +19,8 @@ export class PlaylistService {
     return await this.playlistRepository.findOne({ where: { id }, relations: ['albums'] })
   }
 
-  async findAll(): Promise<Playlist[]> {
-    return await this.playlistRepository.find({ relations: ['albums'] })
+  async findAllPaginated(query: PaginateQuery): Promise<Paginated<Playlist>> {
+    return await paginate(query, this.playlistRepository, PlaylistPaginateConfig)
   }
 
   async findAllByUserIdPaginated(userId: string, query: PaginateQuery): Promise<Paginated<Playlist>> {

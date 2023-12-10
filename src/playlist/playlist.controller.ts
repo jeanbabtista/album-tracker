@@ -52,8 +52,8 @@ export class PlaylistController {
     description: 'Returns all playlists in database',
     type: [Playlist]
   })
-  async findAll(): Promise<Playlist[]> {
-    return await this.playlistService.findAll()
+  async findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Playlist>> {
+    return await this.playlistService.findAllPaginated(query)
   }
 
   @HttpCode(HttpStatus.OK)
