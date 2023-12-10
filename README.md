@@ -62,16 +62,16 @@ manage their tracked albums across multiple sessions.
 
 ### Playlists (of albums)
 
-| Method | Endpoint               | Description                  | Body                                      | Auth         | Important notes |
-|--------|------------------------|------------------------------|-------------------------------------------|--------------|-----------------|
-| GET    | `/playlist`            | Get all playlists            |                                           |              |                 |
-| GET    | `/playlist/me/all`     | Get all playlists from user  |                                           | Bearer token |                 |
-| GET    | `/playlist/:id`        | Get playlist by ID           |                                           |              |                 |
-| PUT    | `/playlist/:id`        | Updates playlist by ID       | `{ "name": "Test" }`                      |              |                 |
-| POST   | `/playlist`            | Save playlist                | `{ "name": "Test", "description": "test"` | Bearer token |                 |
-| POST   | `/playlist/:id/albums` | Adds albums to playlist      | `{ "albumIds": [] }`                      | Bearer token |                 |
-| DELETE | `/playlist/:id/albums` | Removes albums from playlist | `{ "albumIds": [] }`                      | Bearer token |                 |
-| DELETE | `/playlist/:id`        | Delete playlist              |                                           | Bearer token |                 |
+| Method | Endpoint               | Description                  | Body                                      | Auth         | Important notes                            |
+|--------|------------------------|------------------------------|-------------------------------------------|--------------|--------------------------------------------|
+| GET    | `/playlist`            | Get all playlists            |                                           | Bearer token | ADMIN ONLY                                 |
+| GET    | `/playlist/me/all`     | Get all playlists from user  |                                           | Bearer token |                                            |
+| GET    | `/playlist/:id`        | Get playlist by ID           |                                           |              | Returns playlist with all albums           |
+| PUT    | `/playlist/:id`        | Updates playlist by ID       | `{ "name": "Test" }`                      |              | Can update only name and description       |
+| POST   | `/playlist`            | Creates playlist             | `{ "name": "Test", "description": "test"` | Bearer token | Creates a playlist with empty albums array |
+| POST   | `/playlist/:id/albums` | Adds albums to playlist      | `{ "albumIds": [] }`                      | Bearer token |                                            |
+| DELETE | `/playlist/:id/albums` | Removes albums from playlist | `{ "albumIds": [] }`                      | Bearer token |                                            |
+| DELETE | `/playlist/:id`        | Delete playlist              |                                           | Bearer token |                                            |
 
 ## Getting Started
 
@@ -79,7 +79,7 @@ Follow these steps to get the Album Tracker up and running on your local machine
 
 ### Prerequisites
 
-- [Node JS](https://nodejs.org/en/download/).
+- [Node JS v20.9.0](https://nodejs.org/en/download/).
 - [Docker](https://www.docker.com/get-started).
 
 ### Installation

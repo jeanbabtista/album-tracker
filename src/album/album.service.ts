@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Album } from '../postgres/entities/album.entity'
 import { In, Repository } from 'typeorm'
 import { CreateAlbumDto } from './dtos/create-album.dto'
+import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate'
+import { AlbumPaginateConfig } from './album-paginate-config'
 
 @Injectable()
 export class AlbumService {
@@ -16,8 +18,8 @@ export class AlbumService {
     return await this.albumRepository.findOne({ where: { url } })
   }
 
-  async findAll(): Promise<[Album[], number]> {
-    return await this.albumRepository.findAndCount()
+  async findAllPaginated(query: PaginateQuery): Promise<Paginated<Album>> {
+    return paginate(query, this.albumRepository, AlbumPaginateConfig)
   }
 
   async findAllByIds(ids: string[]): Promise<Album[]> {

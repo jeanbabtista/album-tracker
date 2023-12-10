@@ -1,33 +1,15 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from 'typeorm'
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm'
 import { User } from './user.entity'
 import { Album } from './album.entity'
+import { AbstractEntity } from '../../common/entities/abstract.entity'
 
 @Entity()
-export class Playlist {
-  @PrimaryGeneratedColumn('uuid')
-  id: string
-
+export class Playlist extends AbstractEntity {
   @Column('varchar', { length: 255 })
   name: string
 
   @Column('text')
   description?: string
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date
 
   @ManyToOne(() => User, (user) => user.playlists)
   @JoinColumn({ name: 'user_id' })

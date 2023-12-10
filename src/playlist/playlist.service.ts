@@ -5,6 +5,8 @@ import { Playlist } from '../postgres/entities/playlist.entity'
 import { CreatePlaylistDto } from './dtos/create-playlist.dto'
 import { AlbumService } from '../album/album.service'
 import { UpdatePlaylistDto } from './dtos/update-playlist.dto'
+import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate'
+import { PlaylistPaginateConfig } from './playlist-paginate-config'
 
 @Injectable()
 export class PlaylistService {
@@ -21,8 +23,8 @@ export class PlaylistService {
     return await this.playlistRepository.find({ relations: ['albums'] })
   }
 
-  async findAllByUserId(userId: string): Promise<Playlist[]> {
-    return await this.playlistRepository.find({ where: { userId }, relations: ['albums'] })
+  async findAllByUserIdPaginated(userId: string, query: PaginateQuery): Promise<Paginated<Playlist>> {
+    return paginate(query, this.playlistRepository, { ...PlaylistPaginateConfig, where: { userId } })
   }
 
   async create(data: CreatePlaylistDto, userId: string): Promise<Playlist> {
@@ -32,7 +34,7 @@ export class PlaylistService {
 
   async addAlbums(id: string, albumIds: string[], userId: string): Promise<Playlist> {
     const playlist = await this.findOneById(id)
-    if (!playlist) throw new NotFoundException()
+    if (!playlist) throw new NotFoundException('Playlist not found')
     if (playlist.userId !== userId) throw new UnauthorizedException()
 
     const albums = await this.albumService.findAllByIds(albumIds)
@@ -43,11 +45,11 @@ export class PlaylistService {
 
   async removeAlbums(id: string, albumIds: string[], userId: string): Promise<Playlist> {
     const playlist = await this.findOneById(id)
-    if (!playlist) throw new NotFoundException()
+    if (!playlist) throw new NotFoundException('Playlist not found')
     if (playlist.userId !== userId) throw new UnauthorizedException()
 
     const albums = await this.albumService.findAllByIds(albumIds)
-    playlist.albums = playlist.albums.filter((album) => !albums.includes(album))
+    playlist.albums = playlist.albums.filter((album) => !albums.map(({ id }) => id).includes(album.id))
 
     return await this.playlistRepository.save(playlist)
   }

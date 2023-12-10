@@ -10,13 +10,17 @@ import { AlbumService } from './album.service'
 import { Album } from '../postgres/entities/album.entity'
 import { CreateAlbumDto } from './dtos/create-album.dto'
 import { serialize } from '../common/utils/serialize'
+import { Paginate, Paginated, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate'
+import { AlbumPaginateConfig } from './album-paginate-config'
+import { ConfigService } from '../config/config.service'
 
 @Controller('album')
 @ApiTags('album')
 export class AlbumController {
   constructor(
     private readonly albumService: AlbumService,
-    private readonly lastFmService: LastFmService
+    private readonly lastFmService: LastFmService,
+    private readonly configService: ConfigService
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -24,7 +28,7 @@ export class AlbumController {
   @ApiOperation({ summary: 'Returns an album by id' })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Returns an album by idr',
+    description: 'Returns an album by id',
     type: Album
   })
   async findById(@RequestUser() user: User, @Param('id', new ParseUUIDPipe()) id: string): Promise<Album> {
@@ -34,14 +38,14 @@ export class AlbumController {
   @HttpCode(HttpStatus.OK)
   @Get()
   @ApiOperation({ summary: 'Returns all albums in database' })
+  @PaginatedSwaggerDocs(Album, AlbumPaginateConfig)
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns all albums in database',
     type: [Album]
   })
-  async findAll(): Promise<{ count: number; albums: Album[] }> {
-    const [albums, count] = await this.albumService.findAll()
-    return { count, albums }
+  async findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Album>> {
+    return await this.albumService.findAllPaginated(query)
   }
 
   @HttpCode(HttpStatus.OK)
@@ -62,6 +66,7 @@ export class AlbumController {
     const result = await firstValueFrom(this.lastFmService.searchAlbums(query))
 
     // save albums to our database
+    const limit = this.configService.get('LAST_FM_SEARCH_LIMIT')
     for (const data of result.albums) {
       const album = await this.albumService.createOrUpdate(
         serialize(data, CreateAlbumDto, (data) => ({
@@ -69,7 +74,7 @@ export class AlbumController {
           artist: data.artist,
           url: data.url,
           image: data.image,
-          releaseDate: '',
+          releaseDate: null,
           listeners: 0,
           playcount: 0,
           summary: ''
@@ -77,6 +82,7 @@ export class AlbumController {
       )
 
       albums.push(album)
+      if (albums.length >= limit) break
     }
 
     return albums
@@ -131,6 +137,7 @@ export class AlbumController {
     const { artists } = await firstValueFrom(this.lastFmService.getSimilarArtists(artist))
 
     // for each similar artist, fetch top albums
+    const limit = this.configService.get('LAST_FM_SEARCH_LIMIT')
     for (const { name } of artists) {
       const result = await firstValueFrom(this.lastFmService.getArtistTopAlbums(name))
       for (const lastFmAlbum of result.albums) {
@@ -149,6 +156,7 @@ export class AlbumController {
         )
 
         data.push(album)
+        if (data.length >= limit) break
       }
     }
 

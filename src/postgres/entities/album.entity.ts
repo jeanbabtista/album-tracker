@@ -1,12 +1,10 @@
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn, Unique } from 'typeorm'
+import { Column, Entity, ManyToMany, Unique } from 'typeorm'
 import { Playlist } from './playlist.entity'
+import { AbstractEntity } from '../../common/entities/abstract.entity'
 
 @Entity()
 @Unique(['url'])
-export class Album {
-  @PrimaryGeneratedColumn('uuid')
-  id: string
-
+export class Album extends AbstractEntity {
   @Column('varchar', { length: 255 })
   name: string
 

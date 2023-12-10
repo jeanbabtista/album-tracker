@@ -1,4 +1,16 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Post, Put } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
+  Param,
+  ParseUUIDPipe,
+  Post,
+  Put
+} from '@nestjs/common'
 import { PlaylistService } from './playlist.service'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Auth } from '../common/decorators/auth.decorator'
@@ -8,6 +20,8 @@ import { Playlist } from '../postgres/entities/playlist.entity'
 import { CreatePlaylistDto } from './dtos/create-playlist.dto'
 import { UpdatePlaylistDto } from './dtos/update-playlist.dto'
 import { AlbumIdsDto } from '../album/dtos/album-ids.dto'
+import { Paginate, Paginated, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate'
+import { PlaylistPaginateConfig } from './playlist-paginate-config'
 
 @Controller('playlist')
 @ApiTags('playlist')
@@ -16,14 +30,18 @@ export class PlaylistController {
 
   @HttpCode(HttpStatus.OK)
   @Get(':id')
+  @Auth()
   @ApiOperation({ summary: 'Returns a playlist by id' })
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Returns a playlist by id',
     type: Playlist
   })
-  async findById(@Param('id', new ParseUUIDPipe()) id: string): Promise<Playlist> {
-    return await this.playlistService.findOneById(id)
+  async findById(@RequestUser() user: User, @Param('id', new ParseUUIDPipe()) id: string): Promise<Playlist> {
+    const playlist = await this.playlistService.findOneById(id)
+    if (playlist.userId !== user.id) throw new NotFoundException('Playlist not found')
+
+    return playlist
   }
 
   @HttpCode(HttpStatus.OK)
@@ -42,13 +60,14 @@ export class PlaylistController {
   @Get('me/all')
   @Auth()
   @ApiOperation({ summary: 'Returns all playlists for a user' })
+  @PaginatedSwaggerDocs(Playlist, PlaylistPaginateConfig)
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Returns all playlists for a user',
+    description: 'Returns all playlists for current user',
     type: [Playlist]
   })
-  async findAllByUserId(@RequestUser() user: User): Promise<Playlist[]> {
-    return await this.playlistService.findAllByUserId(user.id)
+  async findAllByUserId(@RequestUser() user: User, @Paginate() query: PaginateQuery): Promise<Paginated<Playlist>> {
+    return await this.playlistService.findAllByUserIdPaginated(user.id, query)
   }
 
   @HttpCode(HttpStatus.OK)
@@ -93,9 +112,9 @@ export class PlaylistController {
   async addAlbums(
     @RequestUser() user: User,
     @Param('id', new ParseUUIDPipe()) id: string,
-    @Body() body: AlbumIdsDto
+    @Body() { albumIds }: AlbumIdsDto
   ): Promise<Playlist> {
-    return await this.playlistService.addAlbums(id, body.albumIds, user.id)
+    return await this.playlistService.addAlbums(id, albumIds, user.id)
   }
 
   @HttpCode(HttpStatus.OK)
