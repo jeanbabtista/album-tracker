@@ -1,5 +1,5 @@
 import { PaginateConfig } from 'nestjs-paginate'
-import { Album } from '../postgres/entities/album.entity'
+import { Album } from './entities/album.entity'
 
 export const AlbumPaginateConfig: PaginateConfig<Album> = {
   sortableColumns: ['name', 'artist', 'releaseDate', 'listeners', 'playcount'],

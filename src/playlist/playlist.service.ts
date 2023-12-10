@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { Playlist } from '../postgres/entities/playlist.entity'
+import { Playlist } from './entities/playlist.entity'
 import { CreatePlaylistDto } from './dtos/create-playlist.dto'
 import { AlbumService } from '../album/album.service'
 import { UpdatePlaylistDto } from './dtos/update-playlist.dto'

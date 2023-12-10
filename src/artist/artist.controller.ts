@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, Query, BadRequestException } from '@nestjs/common'
+import { BadRequestException, Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common'
 import { Auth } from '../common/decorators/auth.decorator'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { firstValueFrom, Observable } from 'rxjs'
@@ -7,8 +7,9 @@ import { ArtistsSearchDto } from '../last-fm/dtos/artist-search.dto'
 import { AlbumService } from '../album/album.service'
 import { CreateAlbumDto } from '../album/dtos/create-album.dto'
 import { serialize } from '../common/utils/serialize'
-import { Album } from '../postgres/entities/album.entity'
+import { Album } from '../album/entities/album.entity'
 import { ArtistInfoDto } from '../last-fm/dtos/artist-info.dto'
+import { Permission } from '../common/enums/permission'
 
 @Controller('artist')
 @ApiTags('artist')
@@ -18,9 +19,9 @@ export class ArtistController {
     private readonly albumService: AlbumService
   ) {}
 
+  @Auth(Permission.SEARCH_ARTIST, Permission.SEARCH_ARTISTS)
   @HttpCode(HttpStatus.OK)
   @Get('last-fm/search')
-  @Auth()
   @ApiOperation({ summary: 'Searches for artists' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -32,9 +33,9 @@ export class ArtistController {
     return this.lastFmService.searchArtists(query)
   }
 
+  @Auth(Permission.SEARCH_ARTIST, Permission.SEARCH_ARTISTS)
   @HttpCode(HttpStatus.OK)
   @Get('last-fm/info')
-  @Auth()
   @ApiOperation({ summary: 'Returns artist info and top albums' })
   @ApiResponse({
     status: HttpStatus.OK,

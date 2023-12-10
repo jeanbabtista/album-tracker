@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, Unique } from 'typeorm'
-import { Playlist } from './playlist.entity'
+import { Playlist } from '../../playlist/entities/playlist.entity'
 import { AbstractEntity } from '../../common/entities/abstract.entity'
 
 @Entity()

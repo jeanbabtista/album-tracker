@@ -5,13 +5,13 @@ import { IsEmail, IsNotEmpty, IsString } from 'class-validator'
 import { Expose } from 'class-transformer'
 
 export class SignInDto extends PickType(CreateUserDto, ['email', 'password'] as const) {
-  @ApiProperty({ example: 'john.doe@gmail.com' })
+  @ApiProperty({ example: 'admin@album-tracker.com' })
   @IsEmail()
   @IsNotEmpty()
   @Expose()
   email: string
 
-  @ApiProperty({ example: 'password' })
+  @ApiProperty({ example: 'admin' })
   @IsString()
   @IsNotEmpty()
   @Expose()

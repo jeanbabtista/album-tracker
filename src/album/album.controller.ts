@@ -4,15 +4,15 @@ import { firstValueFrom } from 'rxjs'
 import { AlbumsSearchDto } from '../last-fm/dtos/album-search.dto'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Auth } from '../common/decorators/auth.decorator'
-import { RequestUser } from '../common/decorators/request-user.decorator'
-import { User } from '../postgres/entities/user.entity'
 import { AlbumService } from './album.service'
-import { Album } from '../postgres/entities/album.entity'
+import { Album } from './entities/album.entity'
 import { CreateAlbumDto } from './dtos/create-album.dto'
 import { serialize } from '../common/utils/serialize'
 import { Paginate, Paginated, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate'
 import { AlbumPaginateConfig } from './album-paginate-config'
 import { ConfigService } from '../config/config.service'
+import { Incognito } from '../common/decorators/no-auth.decorator'
+import { Permission } from '../common/enums/permission'
 
 @Controller('album')
 @ApiTags('album')
@@ -23,6 +23,7 @@ export class AlbumController {
     private readonly configService: ConfigService
   ) {}
 
+  @Incognito()
   @HttpCode(HttpStatus.OK)
   @Get(':id')
   @ApiOperation({ summary: 'Returns an album by id' })
@@ -31,10 +32,11 @@ export class AlbumController {
     description: 'Returns an album by id',
     type: Album
   })
-  async findById(@RequestUser() user: User, @Param('id', new ParseUUIDPipe()) id: string): Promise<Album> {
+  async findById(@Param('id', new ParseUUIDPipe()) id: string): Promise<Album> {
     return await this.albumService.findOneById(id)
   }
 
+  @Incognito()
   @HttpCode(HttpStatus.OK)
   @Get()
   @ApiOperation({ summary: 'Returns all albums in database' })
@@ -48,9 +50,9 @@ export class AlbumController {
     return await this.albumService.findAllPaginated(query)
   }
 
+  @Auth(Permission.SEARCH_ALBUM, Permission.SEARCH_ALBUMS)
   @HttpCode(HttpStatus.OK)
   @Get('last-fm/search')
-  @Auth()
   @ApiOperation({ summary: 'Searches for albums' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -88,9 +90,9 @@ export class AlbumController {
     return albums
   }
 
+  @Auth(Permission.READ_ALBUM)
   @HttpCode(HttpStatus.OK)
   @Get('last-fm/info')
-  @Auth()
   @ApiOperation({ summary: 'Returns album info' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -119,9 +121,9 @@ export class AlbumController {
     )
   }
 
+  @Auth(Permission.READ_ALBUM, Permission.READ_ALBUMS)
   @HttpCode(HttpStatus.OK)
   @Get('last-fm/similar')
-  @Auth()
   @ApiOperation({ summary: 'Returns similar albums' })
   @ApiResponse({
     status: HttpStatus.OK,

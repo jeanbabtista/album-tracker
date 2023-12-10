@@ -6,6 +6,7 @@ import { serialize } from '../common/utils/serialize'
 import { UserDto } from '../user/dtos/user.dto'
 import { JwtAccessToken } from './types/jwt-access-token'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiOkPaginatedResponse } from 'nestjs-paginate'
 
 @Controller('auth')
 @ApiTags('auth')
@@ -28,7 +29,10 @@ export class AuthController {
   @HttpCode(HttpStatus.ACCEPTED)
   @Post('login')
   @ApiOperation({ summary: 'Signs in a user' })
-  @ApiResponse({ status: HttpStatus.ACCEPTED, description: 'Signs in a user' })
+  @ApiResponse({
+    status: HttpStatus.ACCEPTED,
+    description: 'Signs in a user'
+  })
   signIn(@Body() { email, password }: SignInDto): Promise<JwtAccessToken> {
     return this.authService.signIn(email, password)
   }

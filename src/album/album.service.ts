@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Album } from '../postgres/entities/album.entity'
+import { Album } from './entities/album.entity'
 import { In, Repository } from 'typeorm'
 import { CreateAlbumDto } from './dtos/create-album.dto'
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate'

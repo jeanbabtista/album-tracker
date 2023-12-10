@@ -1,5 +1,5 @@
 import { PaginateConfig } from 'nestjs-paginate'
-import { Playlist } from '../postgres/entities/playlist.entity'
+import { Playlist } from './entities/playlist.entity'
 
 export const PlaylistPaginateConfig: PaginateConfig<Playlist> = {
   sortableColumns: ['name', 'description'],

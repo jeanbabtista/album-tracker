@@ -9,5 +9,8 @@ export default (): EnvironmentConfig => ({
   PG_DATABASE: process.env.PG_DATABASE || 'album-tracker',
   LAST_FM_API_KEY: process.env.LAST_FM_API_KEY,
   LAST_FM_SEARCH_LIMIT: parseInt(process.env.LAST_FM_SEARCH_LIMIT) || 10,
-  JWT_SECRET: process.env.JWT_SECRET || 'secret'
+  JWT_SECRET: process.env.JWT_SECRET || 'secret',
+  CREATE_ADMIN: process.env.CREATE_ADMIN === '1' || false,
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL || null,
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || null
 })

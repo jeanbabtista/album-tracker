@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt'
 import { JwtAccessToken } from './types/jwt-access-token'
 import { JwtPayload } from './types/jwt-payload'
 import { SignUpDto } from './dtos/sign-up.dto'
-import { User } from '../postgres/entities/user.entity'
+import { User } from '../user/entities/user.entity'
 
 @Injectable()
 export class AuthService {

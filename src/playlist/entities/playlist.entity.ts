@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne } from 'typeorm'
-import { User } from './user.entity'
-import { Album } from './album.entity'
+import { User } from '../../user/entities/user.entity'
+import { Album } from '../../album/entities/album.entity'
 import { AbstractEntity } from '../../common/entities/abstract.entity'
 
 @Entity()

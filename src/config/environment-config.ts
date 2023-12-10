@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator'
+import { IsBooleanString, IsNumber, IsString } from 'class-validator'
 
 export interface EnvConfig {
   PORT: number
@@ -21,7 +21,13 @@ export interface AuthConfig {
   JWT_SECRET: string
 }
 
-export class EnvironmentConfig implements EnvConfig, PostgresConfig, LastFmApiConfig, AuthConfig {
+export interface AdminConfig {
+  CREATE_ADMIN: boolean
+  ADMIN_EMAIL: string
+  ADMIN_PASSWORD: string
+}
+
+export class EnvironmentConfig implements EnvConfig, PostgresConfig, LastFmApiConfig, AuthConfig, AdminConfig {
   @IsNumber()
   PORT: number
 
@@ -48,4 +54,13 @@ export class EnvironmentConfig implements EnvConfig, PostgresConfig, LastFmApiCo
 
   @IsString()
   JWT_SECRET: string
+
+  @IsBooleanString()
+  CREATE_ADMIN: boolean
+
+  @IsString()
+  ADMIN_EMAIL: string
+
+  @IsString()
+  ADMIN_PASSWORD: string
 }
