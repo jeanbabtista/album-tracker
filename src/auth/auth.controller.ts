@@ -6,7 +6,6 @@ import { serialize } from '../common/utils/serialize'
 import { UserDto } from '../user/dtos/user.dto'
 import { JwtAccessToken } from './types/jwt-access-token'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
-import { ApiOkPaginatedResponse } from 'nestjs-paginate'
 
 @Controller('auth')
 @ApiTags('auth')
