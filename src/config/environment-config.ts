@@ -2,6 +2,7 @@ import { IsBooleanString, IsNumber, IsString } from 'class-validator'
 
 export interface EnvConfig {
   PORT: number
+  SEARCH_LIMIT: number
 }
 
 export interface PostgresConfig {
@@ -14,7 +15,11 @@ export interface PostgresConfig {
 
 export interface LastFmApiConfig {
   LAST_FM_API_KEY: string
-  LAST_FM_SEARCH_LIMIT: number
+}
+
+export interface SpotifyApiConfig {
+  SPOTIFY_CLIENT_ID: string
+  SPOTIFY_CLIENT_SECRET: string
 }
 
 export interface AuthConfig {
@@ -25,9 +30,14 @@ export interface AdminConfig {
   CREATE_ADMIN: boolean
   ADMIN_EMAIL: string
   ADMIN_PASSWORD: string
+  CREATE_GLOBAL_PLAYLIST: boolean
+  GLOBAL_PLAYLIST_NAME: string
+  GLOBAL_PLAYLIST_DESCRIPTION: string
 }
 
-export class EnvironmentConfig implements EnvConfig, PostgresConfig, LastFmApiConfig, AuthConfig, AdminConfig {
+export class EnvironmentConfig
+  implements EnvConfig, PostgresConfig, LastFmApiConfig, SpotifyApiConfig, AuthConfig, AdminConfig
+{
   @IsNumber()
   PORT: number
 
@@ -46,11 +56,17 @@ export class EnvironmentConfig implements EnvConfig, PostgresConfig, LastFmApiCo
   @IsString()
   PG_DATABASE: string
 
+  @IsNumber()
+  SEARCH_LIMIT: number
+
   @IsString()
   LAST_FM_API_KEY: string
 
+  @IsString()
+  SPOTIFY_CLIENT_ID: string
+
   @IsNumber()
-  LAST_FM_SEARCH_LIMIT: number
+  SPOTIFY_CLIENT_SECRET: string
 
   @IsString()
   JWT_SECRET: string

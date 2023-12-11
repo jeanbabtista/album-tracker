@@ -33,6 +33,11 @@ manage their tracked albums across multiple sessions.
 Users can create playlists of their favorite albums. Playlists can be shared with other users, and users can add albums
 to their own playlists. Also, our admins can create global playlists that are visible to all users.
 
+### 8. Spotify Integration
+
+Users can connect their Spotify account to the application. This allows users to add albums to their Spotify library
+directly from the application.
+
 ## API Reference
 
 ### Authentication
@@ -53,13 +58,14 @@ to their own playlists. Also, our admins can create global playlists that are vi
 
 ### Albums
 
-| Method | Endpoint                                            | Description        | Body | Auth         | Important notes             | 
-|--------|-----------------------------------------------------|--------------------|------|--------------|-----------------------------|
-| GET    | `/album`                                            | Get all albums     |      |              | Authentication not required |
-| GET    | `/album/:id`                                        | Get album by ID    |      |              | Authentication not required |
-| GET    | `/album/last-fm/search?query=<query>`               | Search for albums  |      | Bearer token |                             |
-| GET    | `/album/last-fm/info?artist=<artist>&album=<album>` | Get album info     |      | Bearer token |                             |
-| GET    | `/album/last-fm/similar?artist=<artist>`            | Get similar albums |      | Bearer token |                             |
+| Method | Endpoint                                                        | Description        | Body | Auth         | Important notes             | 
+|--------|-----------------------------------------------------------------|--------------------|------|--------------|-----------------------------|
+| GET    | `/album`                                                        | Get all albums     |      |              | Authentication not required |
+| GET    | `/album/:id`                                                    | Get album by ID    |      |              | Authentication not required |
+| GET    | `/album/last-fm/search?query=<query>`                           | Search for albums  |      | Bearer token |                             |
+| GET    | `/album/last-fm/info?artist=<artist>&album=<album>`             | Get album info     |      | Bearer token |                             |
+| GET    | `/album/last-fm/similar?artist=<artist>`                        | Get similar albums |      | Bearer token |                             |
+| GET    | `/album/spotify/new-releases?country=<ISO 3166-2 country code>` | Get new releases   |      | Bearer token |                             |
 
 ### Artists
 
@@ -94,7 +100,7 @@ Follow these steps to get the Album Tracker up and running on your local machine
 - [Node JS v20.9.0](https://nodejs.org/en/download/).
 - [Docker](https://www.docker.com/get-started).
 
-### Installation
+### Development
 
 1. Clone the repository:
 
@@ -117,14 +123,15 @@ Follow these steps to get the Album Tracker up and running on your local machine
 
 ### Configuration
 
-1. Obtain API keys from Last.fm by creating an account on [Last.fm](https://www.last.fm/api/account/create).
-2. Copy `.env.example` in a new `.env` file:
+1. Copy `.env.example` in a new `.env` file:
 
     ```bash
     cp .env.example .env
     ```
-
-3. Replace Last.fm keys with your API keys
+2. Obtain API keys from Last.fm by creating an account on [Last.fm](https://www.last.fm/api/account/create) and replace the
+   `LAST_FM_API_KEY` and `LAST_FM_SEARCH_LIMIT` in the `.env` file.
+3. Obtain API keys from [Spotify](https://developer.spotify.com/documentation/web-api/tutorials/getting-started) and replace the
+   `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` in the `.env` file.
 
 ### Usage
 

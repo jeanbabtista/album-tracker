@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { Album } from './entities/album.entity'
 import { JwtModule } from '@nestjs/jwt'
 import { UserModule } from '../user/user.module'
+import { SpotifyModule } from '../spotify/spotify.module'
 
 @Module({
-  imports: [LastFmModule, TypeOrmModule.forFeature([Album]), JwtModule, UserModule],
+  imports: [LastFmModule, SpotifyModule, TypeOrmModule.forFeature([Album]), JwtModule, UserModule],
   controllers: [AlbumController],
   providers: [AlbumService],
   exports: [AlbumService]

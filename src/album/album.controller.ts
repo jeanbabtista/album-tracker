@@ -13,6 +13,8 @@ import { AlbumPaginateConfig } from './album-paginate-config'
 import { ConfigService } from '../config/config.service'
 import { Incognito } from '../common/decorators/incognito.decorator'
 import { Permission } from '../common/enums/permission'
+import { SpotifyService } from '../spotify/spotify.service'
+import { SpotifyBrowseReleasesQueryDto } from '../spotify/dtos/spotify-browse-releases-query.dto'
 
 @Controller('album')
 @ApiTags('album')
@@ -20,6 +22,7 @@ export class AlbumController {
   constructor(
     private readonly albumService: AlbumService,
     private readonly lastFmService: LastFmService,
+    private readonly spotifyService: SpotifyService,
     private readonly configService: ConfigService
   ) {}
 
@@ -68,7 +71,7 @@ export class AlbumController {
     const result = await firstValueFrom(this.lastFmService.searchAlbums(query))
 
     // save albums to our database
-    const limit = this.configService.get('LAST_FM_SEARCH_LIMIT')
+    const limit = this.configService.get('SEARCH_LIMIT')
     for (const data of result.albums) {
       const album = await this.albumService.createOrUpdate(
         serialize(data, CreateAlbumDto, (data) => ({
@@ -133,13 +136,12 @@ export class AlbumController {
   async getSimilar(@Query('artist') artist: string): Promise<Album[]> {
     if (!artist) throw new BadRequestException('Missing `artist` query parameter')
 
-    const data: Album[] = []
-
     // fetch similar artists
+    const data: Album[] = []
     const { artists } = await firstValueFrom(this.lastFmService.getSimilarArtists(artist))
+    const limit = this.configService.get('SEARCH_LIMIT')
 
     // for each similar artist, fetch top albums
-    const limit = this.configService.get('LAST_FM_SEARCH_LIMIT')
     for (const { name } of artists) {
       const result = await firstValueFrom(this.lastFmService.getArtistTopAlbums(name))
       for (const lastFmAlbum of result.albums) {
@@ -160,6 +162,28 @@ export class AlbumController {
         data.push(album)
         if (data.length >= limit) break
       }
+    }
+
+    return data
+  }
+
+  @Auth(Permission.READ_ALBUM, Permission.READ_ALBUMS)
+  @HttpCode(HttpStatus.OK)
+  @Get('spotify/new-releases')
+  @ApiOperation({ summary: 'Returns new releases' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Returns new releases',
+    type: [Album]
+  })
+  async getNewReleases(@Query() query: SpotifyBrowseReleasesQueryDto): Promise<Album[]> {
+    const response = await firstValueFrom(this.spotifyService.getNewReleases(query))
+
+    const limit = this.configService.get('SEARCH_LIMIT')
+    const data: Album[] = []
+    for (const album of response) {
+      data.push(await this.albumService.createOrUpdate(serialize(album, CreateAlbumDto)))
+      if (data.length >= limit) break
     }
 
     return data

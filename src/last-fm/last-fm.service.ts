@@ -36,7 +36,7 @@ export class LastFmService {
     const params = {
       method: 'album.search',
       album: query,
-      limit: this.configService.get('LAST_FM_SEARCH_LIMIT'),
+      limit: this.configService.get('SEARCH_LIMIT'),
       autocorrect: 1,
       ...this.getParams()
     }
@@ -81,16 +81,6 @@ export class LastFmService {
           artist: data.artist,
           url: data.url,
           image: this.getImageUrl(data.image),
-          tracks: Array.isArray(data.tracks?.track)
-            ? data.tracks.track.map((track) => ({ ...track, duration: +track.duration }))
-            : data.tracks?.track
-            ? [{ ...data.tracks.track, duration: +data.tracks.track.duration }]
-            : [],
-          tags: Array.isArray(data.tags?.tag)
-            ? data.tags.tag.map((tag) => ({ name: tag.name, url: tag.url }))
-            : data.tags?.tag
-            ? [{ name: data.tags.tag.name, url: data.tags.tag.url }]
-            : [],
           releaseDate: data.releasedate || null,
           listeners: isNaN(+data.listeners) ? 0 : +data.listeners,
           playcount: isNaN(+data.playcount) ? 0 : +data.playcount,
@@ -105,7 +95,7 @@ export class LastFmService {
     const params = {
       method: 'artist.search',
       artist: query,
-      limit: this.configService.get('LAST_FM_SEARCH_LIMIT'),
+      limit: this.configService.get('SEARCH_LIMIT'),
       autocorrect: 1,
       ...this.getParams()
     }
@@ -173,7 +163,7 @@ export class LastFmService {
     const params = {
       method: 'artist.gettopalbums',
       artist,
-      limit: this.configService.get('LAST_FM_SEARCH_LIMIT'),
+      limit: this.configService.get('SEARCH_LIMIT'),
       autocorrect: 1,
       ...this.getParams()
     }
