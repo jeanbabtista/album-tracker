@@ -125,19 +125,13 @@ Follow these steps to get the Album Tracker up and running on your local machine
     ```
 
 3. Replace Last.fm keys with your API keys
-4. Start the database:
-
-    ```bash
-    docker-compose up -d
-    ```
 
 ### Usage
 
 1. Start the application:
 
     ```bash
-    pnpm start
-    pnpm start:dev # for development
+    docker-compose up -d
     ```
 
 2. Open your web browser and go to [http://localhost:3000/api](http://localhost:3000/api) to see the API documentation (

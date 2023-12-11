@@ -3,14 +3,34 @@ services:
   postgres:
     image: postgres:latest
     container_name: nestjs-postgres
+    env_file:
+      - .env
     environment:
-      POSTGRES_DB: album-tracker
-      POSTGRES_USER: album-tracker
-      POSTGRES_PASSWORD: album-tracker
+      - POSTGRES_DB=${PG_DATABASE}
+      - POSTGRES_USER=${PG_USERNAME}
+      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      - POSTGRES_HOST=${PG_HOST}
+      - POSTGRES_PORT=${PG_PORT}
     volumes:
-        - postgres:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - api
+
+  node:
+    build: .
+    container_name: nestjs-node
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      - api
 
 volumes:
-    postgres:
+  postgres:
+
+networks:
+  api:
+    driver: bridge

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { Module, OnModuleInit } from '@nestjs/common'
 import { PostgresService } from './postgres.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from '../config/config.module'
@@ -21,8 +21,9 @@ import { DataSource } from 'typeorm'
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true
       }),
-      dataSourceFactory: async (options) =>
-        await new DataSource(options).initialize()
+      dataSourceFactory: async (options) => {
+        return await new DataSource(options).initialize()
+      }
     })
   ]
 })
