@@ -13,10 +13,11 @@ export enum Permission {
   READ_PLAYLIST = 'read:playlist',
   READ_PLAYLISTS = 'read:playlists',
   CREATE_PLAYLIST = 'create:playlist',
-  ADD_ALBUMS_TO_PLAYLIST = 'create:playlist-albums',
-  REMOVE_ALBUMS_FROM_PLAYLIST = 'delete:playlist-albums',
   UPDATE_PLAYLIST = 'update:playlist',
   DELETE_PLAYLIST = 'delete:playlist',
+
+  GLOBAL_PLAYLIST_READ = 'read:playlist:global',
+  GLOBAL_PLAYLIST_UPDATE = 'update:playlist:global',
 
   READ_USER = 'read:user',
   READ_USERS = 'read:users',

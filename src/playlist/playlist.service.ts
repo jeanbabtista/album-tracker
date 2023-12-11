@@ -19,6 +19,10 @@ export class PlaylistService {
     return await this.playlistRepository.findOne({ where: { id }, relations: ['albums'] })
   }
 
+  async findGlobal(): Promise<Playlist> {
+    return await this.playlistRepository.findOne({ where: { isGlobal: true }, relations: ['albums'] })
+  }
+
   async findAllPaginated(query: PaginateQuery): Promise<Paginated<Playlist>> {
     return await paginate(query, this.playlistRepository, PlaylistPaginateConfig)
   }

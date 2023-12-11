@@ -28,6 +28,11 @@ providing users with a diverse range of albums to discover and follow.
 Ensure the security of user data with a robust authentication system. Users can create accounts, log in securely, and
 manage their tracked albums across multiple sessions.
 
+### 7. Playlists
+
+Users can create playlists of their favorite albums. Playlists can be shared with other users, and users can add albums
+to their own playlists. Also, our admins can create global playlists that are visible to all users.
+
 ## API Reference
 
 ### Authentication
@@ -65,16 +70,20 @@ manage their tracked albums across multiple sessions.
 
 ### Playlists (of albums)
 
-| Method | Endpoint               | Description                  | Body                                      | Auth         | Important notes                            |
-|--------|------------------------|------------------------------|-------------------------------------------|--------------|--------------------------------------------|
-| GET    | `/playlist/:id`        | Get playlist by ID           |                                           | Bearer token | Returns playlist with all albums           |
-| GET    | `/playlist`            | Get all playlists pagination |                                           | Bearer token | ADMIN                                      |
-| GET    | `/playlist/me/all`     | Get all playlists from user  |                                           | Bearer token |                                            |
-| POST   | `/playlist`            | Creates playlist             | `{ "name": "Test", "description": "test"` | Bearer token | Creates a playlist with empty albums array |
-| PUT    | `/playlist/:id`        | Updates playlist by ID       | `{ "name": "Test" }`                      | Bearer token | Can update only name and description       |
-| POST   | `/playlist/:id/albums` | Adds albums to playlist      | `{ "albumIds": [] }`                      | Bearer token |                                            |
-| DELETE | `/playlist/:id/albums` | Removes albums from playlist | `{ "albumIds": [] }`                      | Bearer token |                                            |
-| DELETE | `/playlist/:id`        | Delete playlist              |                                           | Bearer token |                                            |
+| Method | Endpoint                  | Description                         | Body                                        | Auth         | Important notes                            |
+|--------|---------------------------|-------------------------------------|---------------------------------------------|--------------|--------------------------------------------|
+| GET    | `/playlist/:id`           | Get playlist by ID                  |                                             | Bearer token | Returns playlist with all albums           |
+| GET    | `/playlist`               | Get all playlists pagination        |                                             | Bearer token | ADMIN                                      |
+| GET    | `/playlist/me/all`        | Get all playlists from user         |                                             | Bearer token |                                            |
+| POST   | `/playlist`               | Creates playlist                    | `{ "name": "Test", "description": "test" }` | Bearer token | Creates a playlist with empty albums array |
+| PUT    | `/playlist/:id`           | Updates playlist by ID              | `{ "name": "Test" }`                        | Bearer token | Can update only name and description       |
+| POST   | `/playlist/:id/albums`    | Adds albums to playlist             | `{ "albumIds": [] }`                        | Bearer token |                                            |
+| DELETE | `/playlist/:id/albums`    | Removes albums from playlist        | `{ "albumIds": [] }`                        | Bearer token |                                            |
+| DELETE | `/playlist/:id`           | Delete playlist                     |                                             | Bearer token |                                            |
+| GET    | `/playlist/global`        | Returns global playlist             |                                             |              |                                            |
+| PUT    | `/playlist/global`        | Updates global playlist             | `{ "name": "Test", "description": "test" }` | Bearer token | ADMIN                                      |
+| POST   | `/playlist/global/albums` | Adds albums to global playlist      | `{ "albumIds": [] }`                        | Bearer token | ADMIN                                      | 
+| DELETE | `/playlist/global/albums` | Removes albums from global playlist | `{ "albumIds": [] }`                        | Bearer token | ADMIN                                      |
 
 ## Getting Started
 

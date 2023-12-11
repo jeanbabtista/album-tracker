@@ -11,7 +11,7 @@ import { serialize } from '../common/utils/serialize'
 import { Paginate, Paginated, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate'
 import { AlbumPaginateConfig } from './album-paginate-config'
 import { ConfigService } from '../config/config.service'
-import { Incognito } from '../common/decorators/no-auth.decorator'
+import { Incognito } from '../common/decorators/incognito.decorator'
 import { Permission } from '../common/enums/permission'
 
 @Controller('album')

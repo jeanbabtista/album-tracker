@@ -13,7 +13,8 @@ export function Incognito() {
       Permission.SEARCH_ALBUM,
       Permission.SEARCH_ALBUMS,
       Permission.SEARCH_ARTIST,
-      Permission.SEARCH_ARTISTS
+      Permission.SEARCH_ARTISTS,
+      Permission.GLOBAL_PLAYLIST_READ
     ])
   )
 }

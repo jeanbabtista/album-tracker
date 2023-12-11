@@ -23,6 +23,7 @@ import { AlbumIdsDto } from '../album/dtos/album-ids.dto'
 import { Paginate, Paginated, PaginatedSwaggerDocs, PaginateQuery } from 'nestjs-paginate'
 import { PlaylistPaginateConfig } from './playlist-paginate-config'
 import { Permission } from '../common/enums/permission'
+import { Incognito } from '../common/decorators/incognito.decorator'
 
 @Controller('playlist')
 @ApiTags('playlist')
@@ -101,7 +102,7 @@ export class PlaylistController {
     return await this.playlistService.updateById(id, body, user.id)
   }
 
-  @Auth(Permission.ADD_ALBUMS_TO_PLAYLIST)
+  @Auth(Permission.UPDATE_PLAYLIST)
   @HttpCode(HttpStatus.OK)
   @Post(':id/albums')
   @ApiOperation({ summary: 'Adds albums to a playlist' })
@@ -118,7 +119,7 @@ export class PlaylistController {
     return await this.playlistService.addAlbums(id, albumIds, user.id)
   }
 
-  @Auth(Permission.REMOVE_ALBUMS_FROM_PLAYLIST)
+  @Auth(Permission.UPDATE_PLAYLIST)
   @HttpCode(HttpStatus.OK)
   @Delete(':id/albums')
   @ApiOperation({ summary: 'Removes albums from a playlist' })
@@ -146,5 +147,60 @@ export class PlaylistController {
   })
   async deleteById(@RequestUser() user: User, @Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
     return await this.playlistService.deleteById(id, user.id)
+  }
+
+  @Incognito()
+  @Get('global/get')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Returns the global playlist' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Returns the global playlist',
+    type: Playlist
+  })
+  async getGlobalPlaylist(): Promise<Playlist> {
+    return await this.playlistService.findGlobal()
+  }
+
+  @Auth(Permission.GLOBAL_PLAYLIST_UPDATE)
+  @HttpCode(HttpStatus.OK)
+  @Put('global/update')
+  @ApiOperation({ summary: 'Updates the global playlist' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Updates the global playlist',
+    type: Playlist
+  })
+  async updateGlobalPlaylist(@Body() body: UpdatePlaylistDto): Promise<Playlist> {
+    const playlist = await this.playlistService.findGlobal()
+    return await this.playlistService.updateById(playlist.id, body, playlist.userId)
+  }
+
+  @Auth(Permission.GLOBAL_PLAYLIST_UPDATE)
+  @HttpCode(HttpStatus.OK)
+  @Post('global/add/albums')
+  @ApiOperation({ summary: 'Adds albums to the global playlist' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Adds albums to the global playlist',
+    type: Playlist
+  })
+  async addGlobalPlaylistAlbums(@Body() { albumIds }: AlbumIdsDto): Promise<Playlist> {
+    const playlist = await this.playlistService.findGlobal()
+    return await this.playlistService.addAlbums(playlist.id, albumIds, playlist.userId)
+  }
+
+  @Auth(Permission.GLOBAL_PLAYLIST_UPDATE)
+  @HttpCode(HttpStatus.OK)
+  @Delete('global/delete/albums')
+  @ApiOperation({ summary: 'Deletes albums from the global playlist' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Deletes albums from the global playlist',
+    type: Playlist
+  })
+  async deleteGlobalPlaylistAlbums(@Body() body: AlbumIdsDto): Promise<Playlist> {
+    const playlist = await this.playlistService.findGlobal()
+    return await this.playlistService.removeAlbums(playlist.id, body.albumIds, playlist.userId)
   }
 }

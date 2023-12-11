@@ -63,4 +63,13 @@ export class EnvironmentConfig implements EnvConfig, PostgresConfig, LastFmApiCo
 
   @IsString()
   ADMIN_PASSWORD: string
+
+  @IsBooleanString({})
+  CREATE_GLOBAL_PLAYLIST: boolean
+
+  @IsString()
+  GLOBAL_PLAYLIST_NAME: string
+
+  @IsString()
+  GLOBAL_PLAYLIST_DESCRIPTION: string
 }

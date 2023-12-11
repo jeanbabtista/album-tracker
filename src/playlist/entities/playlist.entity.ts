@@ -18,6 +18,9 @@ export class Playlist extends AbstractEntity {
   @Column('uuid', { name: 'user_id' })
   userId: string
 
+  @Column('bool', { name: 'is_global', default: false })
+  isGlobal: boolean
+
   @ManyToMany(() => Album, (album) => album.playlists, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
   @JoinTable({
     name: 'playlist_album',

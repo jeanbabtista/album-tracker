@@ -30,10 +30,9 @@ export class User extends AbstractEntity {
       Permission.SEARCH_ARTISTS,
       Permission.READ_PLAYLIST,
       Permission.CREATE_PLAYLIST,
-      Permission.ADD_ALBUMS_TO_PLAYLIST,
-      Permission.REMOVE_ALBUMS_FROM_PLAYLIST,
       Permission.UPDATE_PLAYLIST,
       Permission.DELETE_PLAYLIST,
+      Permission.GLOBAL_PLAYLIST_READ,
       Permission.READ_USER
     ]
   })
