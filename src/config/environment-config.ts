@@ -30,9 +30,6 @@ export interface AdminConfig {
   CREATE_ADMIN: boolean
   ADMIN_EMAIL: string
   ADMIN_PASSWORD: string
-  CREATE_GLOBAL_PLAYLIST: boolean
-  GLOBAL_PLAYLIST_NAME: string
-  GLOBAL_PLAYLIST_DESCRIPTION: string
 }
 
 export class EnvironmentConfig
@@ -79,13 +76,4 @@ export class EnvironmentConfig
 
   @IsString()
   ADMIN_PASSWORD: string
-
-  @IsBooleanString({})
-  CREATE_GLOBAL_PLAYLIST: boolean
-
-  @IsString()
-  GLOBAL_PLAYLIST_NAME: string
-
-  @IsString()
-  GLOBAL_PLAYLIST_DESCRIPTION: string
 }

@@ -59,7 +59,9 @@ export class ArtistController {
           listeners: data.listeners || 0,
           playcount: 0,
           releaseDate: null,
-          summary: null
+          summary: null,
+          tags: [],
+          tracks: []
         }))
       )
 

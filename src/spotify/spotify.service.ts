@@ -3,13 +3,12 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '../config/config.service'
 import { HttpService } from '@nestjs/axios'
 import { catchError, map, Observable, of, switchMap, tap, throwError } from 'rxjs'
-import { AxiosError, AxiosResponse } from 'axios'
+import { AxiosResponse } from 'axios'
 import { SpotifyAuthResponse } from './types/spotify-auth-response'
 import { SpotifyBrowseReleasesQueryDto } from './dtos/spotify-browse-releases-query.dto'
 import { SpotifyAlbumsBrowseReleases } from './types/spotify-albums-browse-releases'
 import { serialize } from '../common/utils/serialize'
 import { AlbumInfoDto } from '../last-fm/dtos/album-info.dto'
-import { LastFmException } from '../common/exceptions/last-fm.exception'
 import { SpotifyException } from '../common/exceptions/spotify.exception'
 
 @Injectable()
@@ -44,6 +43,8 @@ export class SpotifyService {
               name: data.name,
               url: data.external_urls.spotify,
               image: this.getImageUrl(data.images),
+              tracks: [],
+              tags: [],
               artist: data.artists[0]?.name || '',
               listeners: 0,
               playcount: 0,

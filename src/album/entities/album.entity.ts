@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToMany, Unique } from 'typeorm'
 import { Playlist } from '../../playlist/entities/playlist.entity'
 import { AbstractEntity } from '../../common/entities/abstract.entity'
+import { TagInfoDto, TrackInfoDto } from '../../last-fm/dtos/album-info.dto'
 
 @Entity()
 @Unique(['url'])
@@ -31,4 +32,7 @@ export class Album extends AbstractEntity {
 
   @ManyToMany(() => Playlist, (playlist) => playlist.albums, { onDelete: 'NO ACTION', onUpdate: 'NO ACTION' })
   playlists: Playlist[]
+
+  tags: TagInfoDto[]
+  tracks: TrackInfoDto[]
 }

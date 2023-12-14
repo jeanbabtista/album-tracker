@@ -82,7 +82,9 @@ export class AlbumController {
           releaseDate: null,
           listeners: 0,
           playcount: 0,
-          summary: ''
+          summary: '',
+          tracks: [],
+          tags: []
         }))
       )
 
@@ -119,7 +121,9 @@ export class AlbumController {
         releaseDate: data.releaseDate || null,
         listeners: data.listeners || null,
         playcount: data.playcount || null,
-        summary: data.summary || null
+        summary: data.summary || null,
+        tracks: data.tracks || [],
+        tags: data.tags || []
       }))
     )
   }
@@ -155,7 +159,9 @@ export class AlbumController {
             releaseDate: null,
             listeners: 0,
             playcount: 0,
-            summary: ''
+            summary: '',
+            tracks: [],
+            tags: []
           }))
         )
 

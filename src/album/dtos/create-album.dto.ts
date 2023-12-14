@@ -1,6 +1,7 @@
-import { IsNumber, IsOptional, IsString, IsUrl } from 'class-validator'
-import { Expose } from 'class-transformer'
+import { IsNumber, IsOptional, IsString, IsUrl, ValidateNested } from 'class-validator'
+import { Expose, Type } from 'class-transformer'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { TagInfoDto, TrackInfoDto } from '../../last-fm/dtos/album-info.dto'
 
 export class CreateAlbumDto {
   @ApiProperty({ example: 'The Dark Side of the Moon' })
@@ -46,4 +47,16 @@ export class CreateAlbumDto {
   @IsOptional()
   @Expose()
   summary: string
+
+  @ApiPropertyOptional()
+  @ValidateNested({ each: true })
+  @Type(() => TrackInfoDto)
+  @Expose()
+  tracks: TrackInfoDto[]
+
+  @ApiPropertyOptional()
+  @ValidateNested({ each: true })
+  @Type(() => TagInfoDto)
+  @Expose()
+  tags: TagInfoDto[]
 }

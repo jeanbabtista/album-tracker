@@ -7,6 +7,8 @@ import { AlbumService } from '../album/album.service'
 import { UpdatePlaylistDto } from './dtos/update-playlist.dto'
 import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate'
 import { PlaylistPaginateConfig } from './playlist-paginate-config'
+import { User } from 'src/user/entities/user.entity'
+import { Permission } from 'src/common/enums/permission'
 
 @Injectable()
 export class PlaylistService {
@@ -19,8 +21,8 @@ export class PlaylistService {
     return await this.playlistRepository.findOne({ where: { id }, relations: ['albums'] })
   }
 
-  async findGlobal(): Promise<Playlist> {
-    return await this.playlistRepository.findOne({ where: { isGlobal: true }, relations: ['albums'] })
+  async findGlobal(): Promise<Playlist[]> {
+    return await this.playlistRepository.find({ where: { isGlobal: true }, relations: ['albums'] })
   }
 
   async findAllPaginated(query: PaginateQuery): Promise<Paginated<Playlist>> {
@@ -31,9 +33,10 @@ export class PlaylistService {
     return paginate(query, this.playlistRepository, { ...PlaylistPaginateConfig, where: { userId } })
   }
 
-  async create(data: CreatePlaylistDto, userId: string): Promise<Playlist> {
+  async create(data: CreatePlaylistDto, user: User): Promise<Playlist> {
     const { name, description } = data
-    return await this.playlistRepository.save({ userId, name, description, albums: [] })
+    const isGlobal = user.permissions.includes(Permission.GLOBAL_PLAYLIST_CREATE)
+    return await this.playlistRepository.save({ userId: user.id, name, description, albums: [], isGlobal })
   }
 
   async addAlbums(id: string, albumIds: string[], userId: string): Promise<Playlist> {

@@ -14,8 +14,5 @@ export default (): EnvironmentConfig => ({
   JWT_SECRET: process.env.JWT_SECRET || 'secret',
   CREATE_ADMIN: process.env.CREATE_ADMIN === '1' || false,
   ADMIN_EMAIL: process.env.ADMIN_EMAIL || null,
-  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || null,
-  CREATE_GLOBAL_PLAYLIST: process.env.CREATE_GLOBAL_PLAYLIST === '1' || false,
-  GLOBAL_PLAYLIST_NAME: process.env.GLOBAL_PLAYLIST_NAME || null,
-  GLOBAL_PLAYLIST_DESCRIPTION: process.env.GLOBAL_PLAYLIST_DESCRIPTION || null
+  ADMIN_PASSWORD: process.env.ADMIN_PASSWORD || null
 })

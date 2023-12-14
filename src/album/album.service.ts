@@ -37,7 +37,8 @@ export class AlbumService {
       album.releaseDate = data.releaseDate || album.releaseDate
       album.listeners = data.listeners || album.listeners
       album.playcount = data.playcount || album.playcount
-
+      album.tracks = data.tracks || album.tracks
+      album.tags = data.tags || album.tags
       return await this.albumRepository.save(album)
     }
 

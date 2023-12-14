@@ -5,8 +5,7 @@ import { ConfigService } from './config/config.service'
 import { setupSwagger } from './common/utils/swagger'
 import { GlobalExceptionFilter } from './common/filters/all-exception.filter'
 import { UserService } from './user/user.service'
-import { createAdminUser, createGlobalPlaylist } from './common/utils/admin'
-import { PostgresService } from './postgres/postgres.service'
+import { createAdminUser } from './common/utils/admin'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -17,11 +16,9 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService)
   const userService = app.get(UserService)
-  const postgresService = app.get(PostgresService)
 
   const logger = new Logger(bootstrap.name)
   await createAdminUser(configService, userService)
-  await createGlobalPlaylist(configService, userService, postgresService)
 
   const port = configService.get('PORT')
   await app.listen(port)

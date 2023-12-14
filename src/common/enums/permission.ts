@@ -17,6 +17,7 @@ export enum Permission {
   DELETE_PLAYLIST = 'delete:playlist',
 
   GLOBAL_PLAYLIST_READ = 'read:playlist:global',
+  GLOBAL_PLAYLIST_CREATE = 'create:playlist:global',
   GLOBAL_PLAYLIST_UPDATE = 'update:playlist:global',
 
   READ_USER = 'read:user',
