@@ -76,20 +76,17 @@ directly from the application.
 
 ### Playlists (of albums)
 
-| Method | Endpoint                  | Description                         | Body                                        | Auth         | Important notes                            |
-|--------|---------------------------|-------------------------------------|---------------------------------------------|--------------|--------------------------------------------|
-| GET    | `/playlist/:id`           | Get playlist by ID                  |                                             | Bearer token | Returns playlist with all albums           |
-| GET    | `/playlist`               | Get all playlists pagination        |                                             | Bearer token | ADMIN                                      |
-| GET    | `/playlist/me/all`        | Get all playlists from user         |                                             | Bearer token |                                            |
-| POST   | `/playlist`               | Creates playlist                    | `{ "name": "Test", "description": "test" }` | Bearer token | Creates a playlist with empty albums array |
-| PUT    | `/playlist/:id`           | Updates playlist by ID              | `{ "name": "Test" }`                        | Bearer token | Can update only name and description       |
-| POST   | `/playlist/:id/albums`    | Adds albums to playlist             | `{ "albumIds": [] }`                        | Bearer token |                                            |
-| DELETE | `/playlist/:id/albums`    | Removes albums from playlist        | `{ "albumIds": [] }`                        | Bearer token |                                            |
-| DELETE | `/playlist/:id`           | Delete playlist                     |                                             | Bearer token |                                            |
-| GET    | `/playlist/global`        | Returns global playlist             |                                             |              |                                            |
-| PUT    | `/playlist/global`        | Updates global playlist             | `{ "name": "Test", "description": "test" }` | Bearer token | ADMIN                                      |
-| POST   | `/playlist/global/albums` | Adds albums to global playlist      | `{ "albumIds": [] }`                        | Bearer token | ADMIN                                      | 
-| DELETE | `/playlist/global/albums` | Removes albums from global playlist | `{ "albumIds": [] }`                        | Bearer token | ADMIN                                      |
+| Method | Endpoint                  | Description                  | Body                                        | Auth         | Important notes                            |
+|--------|---------------------------|------------------------------|---------------------------------------------|--------------|--------------------------------------------|
+| GET    | `/playlist/:id`           | Get playlist by ID           |                                             | Bearer token | Returns playlist with all albums           |
+| GET    | `/playlist`               | Get all playlists pagination |                                             | Bearer token |                                            |
+| GET    | `/playlist/me/all`        | Get all playlists from user  |                                             | Bearer token |                                            |
+| POST   | `/playlist`               | Creates playlist             | `{ "name": "Test", "description": "test" }` | Bearer token | Creates a playlist with empty albums array |
+| PUT    | `/playlist/:id`           | Updates playlist by ID       | `{ "name": "Test" }`                        | Bearer token | Can update only name and description       |
+| POST   | `/playlist/:id/albums`    | Adds albums to playlist      | `{ "albumIds": [] }`                        | Bearer token |                                            |
+| DELETE | `/playlist/:id/albums`    | Removes albums from playlist | `{ "albumIds": [] }`                        | Bearer token |                                            |
+| DELETE | `/playlist/:id`           | Delete playlist              |                                             | Bearer token |                                            |
+| GET    | `/playlist/global`        | Returns global playlists     |                                             |              |                                            |
 
 ## Getting Started
 
